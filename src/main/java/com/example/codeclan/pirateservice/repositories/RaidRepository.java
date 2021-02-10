@@ -18,4 +18,8 @@ public interface RaidRepository extends JpaRepository<Raid, Long> {
 
     // Find all the raids that a given ship has gone on
     List<Raid> findByPiratesShipId(Long shipId);
+
+    List<Raid> findByLoot(int loot);
+
+//    List<Raid> findByLootBetween(int loot);
 }
