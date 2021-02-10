@@ -11,4 +11,11 @@ public interface PirateRepository extends JpaRepository<Pirate, Long> {
 
     List<Pirate> findByAgeGreaterThan(int age);
 
+    List<Pirate> findByAge(int age);
+    List<Pirate> findByFirstName(String name);
+    List<Pirate> findDistinctByFirstName(String name);
+    List<Pirate> findDistinctByLastNameOrFirstName(String lastName, String firstName);
+
+
+
 }

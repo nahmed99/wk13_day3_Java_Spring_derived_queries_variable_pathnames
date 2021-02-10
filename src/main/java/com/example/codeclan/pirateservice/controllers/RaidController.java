@@ -19,17 +19,61 @@ public class RaidController {
     @Autowired
     RaidRepository raidRepository;
 
+//    @GetMapping(value = "/raids")
+//    public ResponseEntity<List<Raid>> getAllRaids() {
+//        List<Raid> allRaids = raidRepository.findAll();
+//        return new ResponseEntity<>(allRaids, HttpStatus.OK);
+//    }
+
+
+    /**
+     * GET /raids                           null, null        - findAll
+     * GET /raids?location=location_name    location, null    - findByLocationIgnoreCase
+     * GET /raids?shipId=id                  null, shipId     - findPiratesByShipId
+     */
+
     @GetMapping(value = "/raids")
-    public ResponseEntity<List<Raid>> getAllRaids() {
+    public ResponseEntity<List<Raid>> getAllRaids(
+            // name="some_string", some_string will be passed into the defined/related parameter
+            @RequestParam(name="location", required = false) String locationName,
+            @RequestParam(name="shipId", required = false) Long shipId
+
+    ) {
+        
+        // if location != null - do location query and return result
+        if (locationName != null) {
+            List<Raid> allRaids = raidRepository.findByLocationIgnoreCase(locationName);
+            return new ResponseEntity<>(allRaids, HttpStatus.OK);
+        }
+        // if shipId != null - do ship query and return result
+        if (shipId != null) {
+            List<Raid> allRaids = raidRepository.findByPiratesShipId(shipId);
+            return new ResponseEntity<>(allRaids, HttpStatus.OK);
+        }
+        // otherwise do the find all query
         List<Raid> allRaids = raidRepository.findAll();
         return new ResponseEntity<>(allRaids, HttpStatus.OK);
     }
+
 
     // SHOW (by id)
     @GetMapping(value = "/raids/{id}")
     public ResponseEntity<Optional<Raid>> getRaid(@PathVariable Long id){
         return new ResponseEntity<>(raidRepository.findById(id), HttpStatus.OK);
     }
+
+//    // SHOW (by location)
+//    @GetMapping("/raids/location/{location}")
+//    public ResponseEntity<List<Raid>> getRaidByLocation(@PathVariable String location) {
+//        return new ResponseEntity<>(raidRepository.findByLocationIgnoreCase(location), HttpStatus.OK);
+//    }
+//
+//
+//    @GetMapping("/raids/ship/{id}")
+//    public ResponseEntity<List<Raid>> findByPiratesShipId(@PathVariable Long id) {
+//        return new ResponseEntity<>(raidRepository.findByPiratesShipId(id), HttpStatus.OK);
+//    }
+
 
     // SHOW (by location)
     @GetMapping("/raids/location/{location}")

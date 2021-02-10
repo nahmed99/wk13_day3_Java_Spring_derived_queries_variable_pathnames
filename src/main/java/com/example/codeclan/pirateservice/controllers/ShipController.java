@@ -17,24 +17,36 @@ public class ShipController {
     @Autowired
     ShipRepository shipRepository;
 
+    // REST GET all
     @GetMapping(value = "/ships")
     public ResponseEntity<List<Ship>> getAllShips() {
         List<Ship> allPirates = shipRepository.findAll();
         return new ResponseEntity<>(allPirates, HttpStatus.OK);
     }
 
+
+    // REST GET by Id
     @GetMapping(value = "/ships/{id}")
     public ResponseEntity<Optional<Ship>> getPirate(@PathVariable Long id){
         return new ResponseEntity<>(shipRepository.findById(id), HttpStatus.OK);
     }
 
-    // SHOW (by pirate firstName)
-    @GetMapping("/ships/pirates/{firstName}")
-    public ResponseEntity<List<Ship>> getShipsByPirateFirstName(@PathVariable String firstName) {
+
+    /**
+     *  SHOW (by pirate firstName) using a passed in parameter:
+     *
+     *   GET /ships/pirates?firstName=whatever
+     *   The word 'named' above will be referenced within the method below...
+     */
+    @GetMapping("/ships/pirates")
+    public ResponseEntity<List<Ship>> findByPiratesFirstName(
+            @RequestParam(name = "firstName") String firstName
+    ) {
         return new ResponseEntity<>(shipRepository.findByPiratesFirstName(firstName), HttpStatus.OK);
     }
 
 
+    // REST Post
     @PostMapping("/ships")
     public ResponseEntity<Ship> createShip(@RequestBody Ship ship) {
         shipRepository.save(ship);
